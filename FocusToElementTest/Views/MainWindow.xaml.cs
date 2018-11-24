@@ -1,6 +1,9 @@
 ﻿using DevExpress.Xpf.Bars;
 using DevExpress.Xpf.Core;
+using DevExpress.Xpf.Editors;
+using DevExpress.Xpf.Grid;
 using FocusToElementTest.Helper;
+using FocusToElementTest.Model;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -24,16 +27,22 @@ namespace FocusToElementTest.Views
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
-        {            
-            var error = ((Button)sender).Tag;
-            if (error != null)
-            {
-                var propertyName = error as string;
-                FocusHelper.FocusToBindedProperty(this, $"Entity.{propertyName}");
-                FlyoutControl.IsOpen = false;
-            }
+        {           
+            var editor = (Button)sender;
+            var rowData = (editor.DataContext as GridCellData)?.RowData;
+            var propertyName = (rowData.Row as ValidationSummary)?.PropertyName;
+            FocusHelper.FocusToBindedProperty(this, $"Entity.{propertyName}");
+            FlyoutControl.IsOpen = false;
         }
 
+        private void HyperlinkEditSettings_RequestNavigation(object sender, DevExpress.Xpf.Editors.HyperlinkEditRequestNavigationEventArgs e)
+        {
+            var editor = (HyperlinkEdit)sender;
+            var rowData = (editor.DataContext as GridCellData)?.RowData;
+            var propertyName = (rowData.Row as ValidationSummary)?.PropertyName;
+            FocusHelper.FocusToBindedProperty(this, $"Entity.{propertyName}");
+            FlyoutControl.IsOpen = false;
+        }
     }
 
 

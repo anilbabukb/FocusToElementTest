@@ -13,6 +13,11 @@
 	Title="MainWindow" Height="350" Width="525"
 	>
 	<Grid>
+		<!--<Grid.Resources>
+			<Style TargetType="dx:DXTabControl">
+				<Setter Property="TabContentCacheMode" Value="CacheTabsAll"/>
+			</Style>                   
+		</Grid.Resources>-->
 		<dxe:FlyoutControl AllowMoveAnimation="True"
 						   x:Name="FlyoutControl">
 			<Grid>
@@ -21,10 +26,9 @@
 								 ItemsSource="{Binding DataContext.Entity.ValidationSummary,ElementName=Layout}">
 					<dxg:GridControl.View>
 						<dxg:TableView AllowEditing="False" AllowGrouping="False" ShowGroupPanel="False" NavigationStyle="None"
-									   AutoWidth="True" ShowIndicator="False" >
+									   AutoWidth="True" ShowIndicator="False" ShowColumnHeaders="False" ShowHorizontalLines="False" ShowVerticalLines="False">
 
 						</dxg:TableView>
-
 					</dxg:GridControl.View>
 					<dxg:GridControl.Columns>
 						<dxg:GridColumn 
@@ -59,7 +63,7 @@
 					   
 						<dxg:GridColumn Header="Error Messages" FieldName="ErrorMessage">
 							<dxg:GridColumn.EditSettings>
-								<dxe:TextEditSettings TextWrapping="Wrap"/>
+								<dxe:HyperlinkEditSettings RequestNavigation="HyperlinkEditSettings_RequestNavigation"/>
 							</dxg:GridColumn.EditSettings>
 						</dxg:GridColumn>
 					</dxg:GridControl.Columns>
@@ -74,59 +78,36 @@
 									   ItemClick="BarItem_OnItemClick" IsVisible="{Binding DataContext.Entity.ValidationSummary.Count,ElementName=Layout}" />
 				</dxr:RibbonStatusBarControl.LeftItems>
 			</dxr:RibbonStatusBarControl>
-			<dxlc:LayoutControl x:Name="Layout" Orientation="Vertical">			
+			<dxlc:LayoutControl x:Name="Layout" Orientation="Vertical">
+				<dxlc:LayoutGroup View="Tabs">
+					<dxlc:LayoutGroup Header="Tab1" Orientation="Vertical">                        
+						<dxlc:LayoutItem Label="Property1">
+							<dxe:TextEdit EditValue="{Binding Entity.Property1, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+						</dxlc:LayoutItem>
+						<dxlc:LayoutItem Label="Property2">
+							<dxe:TextEdit EditValue="{Binding Entity.Property2, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+						</dxlc:LayoutItem>
+					</dxlc:LayoutGroup>                    
+					<dxlc:LayoutGroup Header="Tab2" Orientation="Vertical">                        
+						<dxlc:LayoutItem Label="Property3">
+							<dxe:TextEdit EditValue="{Binding Entity.Property3, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+						</dxlc:LayoutItem>
+						<dxlc:LayoutGroup View="Tabs">
+							<dxlc:LayoutGroup Orientation="Vertical" Header="Tab3">
+								<dxlc:LayoutItem Label="Property4">
+									<dxe:TextEdit EditValue="{Binding Entity.Property4, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+								</dxlc:LayoutItem>
+							</dxlc:LayoutGroup>
 
-				<!--<dxlc:LayoutGroup View="Tabs">
-			<dxlc:LayoutGroup Header="Tab1" Orientation="Vertical">                
-				<dxlc:LayoutItem Label="Property1">
-					<dxe:TextEdit EditValue="{Binding Entity.Property1}"/>
-				</dxlc:LayoutItem>
-				<dxlc:LayoutItem Label="Property2">
-					<dxe:TextEdit EditValue="{Binding Entity.Property2}"/>
-				</dxlc:LayoutItem>                
-			</dxlc:LayoutGroup>
-			<dxlc:LayoutGroup Header="Tab2" Orientation="Vertical">
-				<dxlc:LayoutItem Label="Property3">
-					<dxe:TextEdit EditValue="{Binding Entity.Property3}"/>
-				</dxlc:LayoutItem>
-				<dxlc:LayoutItem Label="Property4">
-					<dxe:TextEdit EditValue="{Binding Entity.Property4}"/>
-				</dxlc:LayoutItem>
-				<dxlc:LayoutItem Label="Property5">
-					<dxe:TextEdit EditValue="{Binding Entity.Property5}"/>
-				</dxlc:LayoutItem>
-			</dxlc:LayoutGroup>            
-		</dxlc:LayoutGroup>-->
-
-
+							<dxlc:LayoutGroup Orientation="Vertical" Header="Tab4">
+								<dxlc:LayoutItem Label="Property5">
+									<dxe:TextEdit EditValue="{Binding Entity.Property5, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+								</dxlc:LayoutItem>
+							</dxlc:LayoutGroup>
+						</dxlc:LayoutGroup>
+					</dxlc:LayoutGroup>
+				</dxlc:LayoutGroup>
 				<!--<dx:DXTabControl>
-			<dx:DXTabItem Header="Tab1">
-				<dxlc:LayoutGroup Orientation="Vertical">
-					<dxlc:LayoutItem Label="Property1">
-						<dxe:TextEdit EditValue="{Binding Entity.Property1}"/>
-					</dxlc:LayoutItem>
-					<dxlc:LayoutItem Label="Property2">
-						<dxe:TextEdit EditValue="{Binding Entity.Property2}"/>
-					</dxlc:LayoutItem>
-				</dxlc:LayoutGroup>
-			</dx:DXTabItem>
-			<dx:DXTabItem Header="Tab2">
-				<dxlc:LayoutGroup Orientation="Vertical">
-					<dxlc:LayoutItem Label="Property3">
-						<dxe:TextEdit EditValue="{Binding Entity.Property3}"/>
-					</dxlc:LayoutItem>
-					<dxlc:LayoutItem Label="Property4">
-						<dxe:TextEdit EditValue="{Binding Entity.Property4}"/>
-					</dxlc:LayoutItem>
-					<dxlc:LayoutItem Label="Property5">
-						<dxe:TextEdit EditValue="{Binding Entity.Property5}"/>
-					</dxlc:LayoutItem>
-				</dxlc:LayoutGroup>
-			</dx:DXTabItem>
-		</dx:DXTabControl>-->
-
-
-				<dx:DXTabControl>
 					<dx:DXTabItem Header="Tab1">
 						<dxlc:LayoutGroup Orientation="Vertical">
 							<dxlc:LayoutItem Label="Property1">
@@ -160,11 +141,9 @@
 							</dx:DXTabControl>
 						</dxlc:LayoutGroup>
 					</dx:DXTabItem>
-
-				</dx:DXTabControl>
+				</dx:DXTabControl>-->
+			
 			</dxlc:LayoutControl>
-		</DockPanel>
-
-		
+		</DockPanel>		
 	</Grid>
 </dx:ThemedWindow>

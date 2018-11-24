@@ -28,7 +28,8 @@ namespace FocusToElementTest.Helper
             {                
                 _tabItem = dependencyObject as DXTabItem;
                 var parent = _tabItem.Parent as DXTabControl;
-                parent.SelectedItem = _tabItem;                
+                parent.SelectedItem = _tabItem;
+                parent.UpdateLayout();
             }
             var dependencyProperties = new List<DependencyProperty>();
             dependencyProperties.AddRange(MarkupWriter.GetMarkupObjectFor(dependencyObject).Properties.Where(x => x.DependencyProperty != null).Select(x => x.DependencyProperty).ToList());
