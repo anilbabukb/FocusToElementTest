@@ -10,33 +10,31 @@ using System.Windows.Markup.Primitives;
 namespace FocusToElementTest.Helper
 {
     public static class FocusHelper
-    {       
-        
+    {        
         static bool _focused;    
 
         public static void FocusToBindedProperty(DependencyObject dependencyObject, string propertyName)
-        {                    
+        {           
             _focused = false;
             
             GetDependencyObjectsWithBindingToPropertyRecursive(propertyName, dependencyObject);
         }
 
         private static void GetDependencyObjectsWithBindingToPropertyRecursive(string propertyName, DependencyObject dependencyObject)
-        {
-           
+        {         
             if (dependencyObject is DXTabItem tabItem)
             {
                 if (tabItem.Parent is DXTabControl parent)
-                {                    
+                {
                     parent.SelectedItem = tabItem;
                     parent.UpdateLayout();
                 }
             }
 
-            if(dependencyObject is LayoutGroup layoutGroup)
+            if (dependencyObject is FrameworkElement layoutGroup)
             {
                 if (layoutGroup.Parent is LayoutGroup parentLayoutGroup && parentLayoutGroup.View == LayoutGroupView.Tabs)
-                    parentLayoutGroup.SelectTab(layoutGroup);                    
+                    parentLayoutGroup.SelectTab(layoutGroup);
             }
 
             var dependencyProperties = new List<DependencyProperty>();
