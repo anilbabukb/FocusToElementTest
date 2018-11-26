@@ -1,4 +1,5 @@
 ﻿using DevExpress.Xpf.Core;
+using DevExpress.Xpf.LayoutControl;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,13 +10,12 @@ using System.Windows.Markup.Primitives;
 namespace FocusToElementTest.Helper
 {
     public static class FocusHelper
-    {        
-        static DXTabItem _tabItem;
+    {       
+        
         static bool _focused;    
 
         public static void FocusToBindedProperty(DependencyObject dependencyObject, string propertyName)
-        {            
-            _tabItem = null;
+        {                    
             _focused = false;
             
             GetDependencyObjectsWithBindingToPropertyRecursive(propertyName, dependencyObject);
@@ -24,13 +24,21 @@ namespace FocusToElementTest.Helper
         private static void GetDependencyObjectsWithBindingToPropertyRecursive(string propertyName, DependencyObject dependencyObject)
         {
            
-            if (dependencyObject is DXTabItem)
-            {                
-                _tabItem = dependencyObject as DXTabItem;
-                var parent = _tabItem.Parent as DXTabControl;
-                parent.SelectedItem = _tabItem;
-                parent.UpdateLayout();
+            if (dependencyObject is DXTabItem tabItem)
+            {
+                if (tabItem.Parent is DXTabControl parent)
+                {                    
+                    parent.SelectedItem = tabItem;
+                    parent.UpdateLayout();
+                }
             }
+
+            if(dependencyObject is LayoutGroup layoutGroup)
+            {
+                if (layoutGroup.Parent is LayoutGroup parentLayoutGroup && parentLayoutGroup.View == LayoutGroupView.Tabs)
+                    parentLayoutGroup.SelectTab(layoutGroup);                    
+            }
+
             var dependencyProperties = new List<DependencyProperty>();
             dependencyProperties.AddRange(MarkupWriter.GetMarkupObjectFor(dependencyObject).Properties.Where(x => x.DependencyProperty != null).Select(x => x.DependencyProperty).ToList());
             dependencyProperties.AddRange(
