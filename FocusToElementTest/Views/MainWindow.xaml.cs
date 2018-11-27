@@ -31,7 +31,7 @@ namespace FocusToElementTest.Views
             var editor = (Button)sender;
             var rowData = (editor.DataContext as GridCellData)?.RowData;
             var propertyName = (rowData.Row as ValidationSummary)?.PropertyName;
-            FocusHelper.FocusToBindedProperty(this, $"Entity.{propertyName}");
+            FocusHelper1.FocusToBindedProperty(this, $"Entity.{propertyName}");
             FlyoutControl.IsOpen = false;
         }
 
@@ -40,7 +40,7 @@ namespace FocusToElementTest.Views
             var editor = (HyperlinkEdit)sender;
             var rowData = (editor.DataContext as GridCellData)?.RowData;
             var propertyName = (rowData.Row as ValidationSummary)?.PropertyName;
-            FocusHelper.FocusToBindedProperty(this, $"Entity.{propertyName}");
+            FocusHelper1.FocusToBindedProperty(this, $"Entity.{propertyName}");
             FlyoutControl.IsOpen = false;
         }
     }
