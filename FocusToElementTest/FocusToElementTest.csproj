@@ -70,7 +70,6 @@
     </Compile>
     <Compile Include="Helper\FocusHelper.cs" />
     <Compile Include="Helper\FocusHelper1.cs" />
-    <Compile Include="Helper\FocusToElementBehavior.cs" />
     <Compile Include="Model\PropertyChangedNotification.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Model\TestModel.cs" />
