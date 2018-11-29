@@ -1,9 +1,16 @@
+using FluentValidation;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace FocusToElementTest.Model
 {
     public class TestModel : PropertyChangedNotification
     {
+        public TestModel()
+        {
+            LineItems = new ObservableCollection<LineItemModel>();            
+        }
+
         [Required(ErrorMessage = "Enter Value for Property1")]
         public string Property1
         {
@@ -76,6 +83,43 @@ namespace FocusToElementTest.Model
             set { SetValue(() => Prop5, value); }
         }
 
+        //[NotNullOrEmptyCollection(ErrorMessage = "Atleast one line item is required")]
+        public ObservableCollection<LineItemModel> LineItems
+        {
+            get { return GetValue(() => LineItems); }
+            set { SetValue(() => LineItems, value); }
+        }
     }
+
+    public class LineItemModel : PropertyChangedNotification
+    {
+        [Required(ErrorMessage = "Enter Value for Name")]
+        public string Name
+        {
+            get { return GetValue(() => Name); }
+            set { SetValue(() => Name, value); }
+        }
+
+        [Required(ErrorMessage = "Enter Value for Description")]
+        public string Description
+        {
+            get { return GetValue(() => Description); }
+            set { SetValue(() => Description, value); }
+        }
+    }
+
+    public class TestModelValidator : AbstractValidator<TestModel>
+    {
+        public TestModelValidator()
+        {
+            RuleFor(i => i.LineItems).Must(items => items.Count > 1).WithMessage("At least one quotation line is required");
+        }
+    }
+
+    //public class NotNullOrEmptyCollectionAttribute : ValidationAttribute
+    //{
+      
+    //    public override bool IsValid(object value) => false;
+    //}
 }
 

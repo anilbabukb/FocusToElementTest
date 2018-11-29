@@ -2,7 +2,6 @@
 using DevExpress.Xpf.LayoutControl;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
@@ -23,28 +22,26 @@ namespace FocusToElementTest.Helper
             if (_obj is FrameworkElement obj)
             {
                 obj.Focus();
-                Debug.WriteLine($"Focusing to {_obj.GetType()} in Layout Item : {((LayoutItem)((FrameworkElement)_obj).Parent).Label}");
+                obj.BringIntoView();
             }
         }
 
         static void FocusTabbedUIElement(DependencyObject obj)
-        {
+        {            
             if (obj is FrameworkElement element)
             {
                 if (element.Parent is DXTabItem tabItem)
                 {
                     if (tabItem.Parent is DXTabControl parent)
                     {
-                        parent.SelectedItem = tabItem;
-                        Debug.WriteLine($"Selecting tab Item : {tabItem.Header}");
+                        parent.SelectedItem = tabItem;                        
                         parent.UpdateLayout();
                     }
                 }
 
                 if (element.Parent is LayoutGroup parentLayoutGroup && parentLayoutGroup.View == LayoutGroupView.Tabs)
                 {
-                    parentLayoutGroup.SelectTab(element);
-                    Debug.WriteLine($"Selecting group tab Item : {((LayoutGroup)element).Header}");
+                    parentLayoutGroup.SelectTab(element);                    
                 }
 
                 if (element.Parent is FrameworkElement parentElement)
@@ -53,12 +50,15 @@ namespace FocusToElementTest.Helper
         }
 
         private static void FindDependencyObjectWithBindingToPropertyRecursive(string propertyName, DependencyObject dependencyObject)
-        {           
-
+        {
+            //if (dependencyObject is GridControl gridControl)
+            //{
+            //    var name = gridControl.Name;
+            //}
             var dependencyProperties = new List<DependencyProperty>();
-            dependencyProperties.AddRange(MarkupWriter.GetMarkupObjectFor(dependencyObject).Properties.Where(x => x.DependencyProperty != null).Select(x => x.DependencyProperty).ToList());
-            dependencyProperties.AddRange(
-                MarkupWriter.GetMarkupObjectFor(dependencyObject).Properties.Where(x => x.IsAttached).Select(x => x.DependencyProperty).ToList());
+            var properites = MarkupWriter.GetMarkupObjectFor(dependencyObject).Properties.ToList();            
+            dependencyProperties.AddRange(properites.Where(x => x.DependencyProperty != null).Select(x => x.DependencyProperty).ToList());
+            dependencyProperties.AddRange(properites.Where(x => x.IsAttached).Select(x => x.DependencyProperty).ToList());          
 
             var bindings = dependencyProperties.Select(x => BindingOperations.GetBindingBase(dependencyObject, x)).Where(x => x != null).ToList();
 
@@ -70,14 +70,14 @@ namespace FocusToElementTest.Helper
                 {
                     if (condition(bindingBase as Binding))
                     {
-                        _obj = dependencyObject;
-                        Debug.WriteLine($"Found {_obj.GetType()} in Layout Item : {((LayoutItem)((FrameworkElement)_obj).Parent).Label}");
+                        _obj = dependencyObject;                        
                         return;
                     }
                 }
             }
 
             var children = LogicalTreeHelper.GetChildren(dependencyObject).OfType<DependencyObject>().ToList();
+            //var children = LayoutTreeHelper.GetLogicalChildren(dependencyObject).OfType<DependencyObject>().ToList();
             if (children.Count == 0)
                 return;
 
