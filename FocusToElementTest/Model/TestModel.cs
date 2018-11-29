@@ -4,14 +4,15 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FocusToElementTest.Model
 {
-    public class TestModel : PropertyChangedNotification
+    public class TestModel : ModelBase
     {
         public TestModel()
         {
-            LineItems = new ObservableCollection<LineItemModel>();            
+            LineItems = new ObservableCollection<LineItemModel>();
         }
 
         [Required(ErrorMessage = "Enter Value for Property1")]
+        [EmailAddress(ErrorMessage ="Email address required")]
         public string Property1
         {
             get { return GetValue(() => Property1); }
@@ -83,15 +84,17 @@ namespace FocusToElementTest.Model
             set { SetValue(() => Prop5, value); }
         }
 
-        //[NotNullOrEmptyCollection(ErrorMessage = "Atleast one line item is required")]
+        //[NotNullOrEmptyCollection(ErrorMessage = "At least one line item is required")]
         public ObservableCollection<LineItemModel> LineItems
         {
             get { return GetValue(() => LineItems); }
             set { SetValue(() => LineItems, value); }
         }
+
+        protected override IValidator FluentValidator => new TestModelValidator();
     }
 
-    public class LineItemModel : PropertyChangedNotification
+    public class LineItemModel : ModelBase
     {
         [Required(ErrorMessage = "Enter Value for Name")]
         public string Name
@@ -112,14 +115,13 @@ namespace FocusToElementTest.Model
     {
         public TestModelValidator()
         {
-            RuleFor(i => i.LineItems).Must(items => items.Count > 1).WithMessage("At least one quotation line is required");
+            RuleFor(i => i.LineItems).Must(items => items.Count > 0).WithMessage("At least one quotation line is required");
         }
     }
 
-    //public class NotNullOrEmptyCollectionAttribute : ValidationAttribute
-    //{
-      
-    //    public override bool IsValid(object value) => false;
-    //}
+    public class NotNullOrEmptyCollectionAttribute : ValidationAttribute
+    {
+        public override bool IsValid(object value) => false;
+    }
 }
 
