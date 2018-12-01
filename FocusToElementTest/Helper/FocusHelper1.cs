@@ -1,11 +1,12 @@
 ﻿using DevExpress.Xpf.Core;
+using DevExpress.Xpf.Grid;
 using DevExpress.Xpf.LayoutControl;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
-using System.Windows.Markup.Primitives;
 
 namespace FocusToElementTest.Helper
 {
@@ -51,14 +52,16 @@ namespace FocusToElementTest.Helper
 
         private static void FindDependencyObjectWithBindingToPropertyRecursive(string propertyName, DependencyObject dependencyObject)
         {
-            //if (dependencyObject is GridControl gridControl)
-            //{
-            //    var name = gridControl.Name;
-            //}
-            var dependencyProperties = new List<DependencyProperty>();
-            var properites = MarkupWriter.GetMarkupObjectFor(dependencyObject).Properties.ToList();            
-            dependencyProperties.AddRange(properites.Where(x => x.DependencyProperty != null).Select(x => x.DependencyProperty).ToList());
-            dependencyProperties.AddRange(properites.Where(x => x.IsAttached).Select(x => x.DependencyProperty).ToList());          
+            if (dependencyObject is GridControl gridControl)
+            {
+                var name = gridControl.Name;
+            }
+            //var dependencyProperties = new List<DependencyProperty>();
+            //var properites = MarkupWriter.GetMarkupObjectFor(dependencyObject).Properties.ToList();            
+            //dependencyProperties.AddRange(properites.Where(x => x.DependencyProperty != null).Select(x => x.DependencyProperty).ToList());
+            //dependencyProperties.AddRange(properites.Where(x => x.IsAttached).Select(x => x.DependencyProperty).ToList());          
+
+            var dependencyProperties = GetAttachedProperties(dependencyObject);
 
             var bindings = dependencyProperties.Select(x => BindingOperations.GetBindingBase(dependencyObject, x)).Where(x => x != null).ToList();
 
@@ -87,6 +90,25 @@ namespace FocusToElementTest.Helper
                 if (_obj != null)
                     return;
             }
+        }
+
+        private static IList<DependencyProperty> GetAttachedProperties(DependencyObject obj)
+        {
+            List<DependencyProperty> result = new List<DependencyProperty>();
+
+            foreach (PropertyDescriptor pd in TypeDescriptor.GetProperties(obj,
+                new Attribute[] { new PropertyFilterAttribute(PropertyFilterOptions.All) }))
+            {
+                DependencyPropertyDescriptor dpd =
+                    DependencyPropertyDescriptor.FromProperty(pd);
+
+                if (dpd != null)
+                {
+                    result.Add(dpd.DependencyProperty);
+                }
+            }
+
+            return result;
         }
     }
 }
